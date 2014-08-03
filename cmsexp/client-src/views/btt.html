@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="columns-12 large">
+    <h1>blind taste test</h1>
+    <audio media-player="audio1">
+      <source src="/static/demo.mp3"/>
+    </audio>
+    <div class="panel">
+      {{audio1.currentTime | formatTime }} of {{audio1.duration | formatTime}}
+    </div>
+    <button ng-click="playToggle()">
+      <span ng-show="audio1.playing">pause</span>
+      <span ng-show="!audio1.playing">play</span>
+    </button>
+  </div>
+</div>
+

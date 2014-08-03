@@ -1,0 +1,7 @@
+<h1>{{page.title}}</h1>
+
+<span ng-repeat="section in page.sections | orderBy:weight">
+  <a href="edit/{{section.id}}">edit section</a>
+  <span ng-bind-html="section.body | asHtml"/>
+</span>
+<a href="">new section</a>

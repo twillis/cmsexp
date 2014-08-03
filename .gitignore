@@ -1,0 +1,10 @@
+/db.sqlite
+*~
+*.pyc
+*.egg-info
+cmsexp/client-src/bower_components
+cmsexp/client-src/node_modules
+cmsexp/static/scripts
+cmsexp/static/styles
+/secret_settings.ini
+/todo.org

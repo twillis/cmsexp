@@ -1,0 +1,15 @@
+<div class="row">
+  <div class="columns-12 large">
+    <ul>
+      <li ng-repeat="page in pages">
+	<a ui-sref="page.show({pageId: page.id})">{{page.slug}}</a>
+      </li>
+    </ul>    
+  </div>
+</div>
+<div class="row">
+  <div class="columns-12 large">
+    <ui-view/>
+  </div>
+</div>
+
