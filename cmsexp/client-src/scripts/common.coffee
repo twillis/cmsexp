@@ -8,7 +8,8 @@ angular.module('app.common', [])
       $log.debug(config)
       if config.method == "POST"
         config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        config.data = $.param(config.data)
+        if config.data
+          config.data = $.param(config.data)
       config
   ])
 .config(['$httpProvider', ($httpProvider) ->
