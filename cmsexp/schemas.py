@@ -20,3 +20,11 @@ class ActivateSchema(RegisterSchema):
 
 ForgotSchema = RegisterSchema
 ResetSchema = ActivateSchema
+
+
+class NewSectionSchema(colander.MappingSchema):
+    body = colander.SchemaNode(colander.String())
+    weight = colander.SchemaNode(colander.Integer())
+
+class SectionSchema(NewSectionSchema):
+    id = colander.SchemaNode(colander.Integer())

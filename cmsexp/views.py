@@ -3,8 +3,8 @@ from . import resource
 from . import schemas
 from . import models as m
 import colander
-from pyramid.httpexceptions import exception_response
-from .mailers import send_email
+from pyramid.httpexceptions import exception_response, HTTPNotFound
+
 
 @view_config(route_name="home", 
              renderer="home.html")
@@ -105,6 +105,37 @@ def view_page_show(context, request):
                 sections=[dict(id=s.id, 
                                body=s.body, 
                                weight=s.weight) for s in context.sections])
+
+
+@view_config(route_name="api",
+             context=m.Page,
+             name="update_section",
+             renderer="json",
+             request_method="POST")
+def view_update_section(context, request):
+    section_data = schemas.SectionSchema().deserialize(request.POST)
+    section = request.db.query(m.PageSection).get(section_data["id"])
+
+    if not (section or section.page_id == context.id):
+        raise HTTPNotFound("no section(%s) for this page" % section_data["id"])
+    
+    section.apply_data(**section_data)
+    return view_page_show(context, request)
+
+
+@view_config(route_name="api",
+             context=m.Page,
+             name="create_section",
+             renderer="json",
+             request_method="POST")
+def view_create_section(context, request):
+    section_data = schemas.NewSectionSchema().deserialize(request.POST)
+    section_data["page_id"] = context.id
+    section_data["author_id"] = 1 # fix this
+    request.db.add(m.PageSection(**section_data))
+    return view_page_show(context, request)
+
+
 
 @view_config(context=colander.Invalid, renderer="json")
 def validation_error_view(exc, request):

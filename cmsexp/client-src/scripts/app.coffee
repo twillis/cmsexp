@@ -6,7 +6,10 @@ angular.module('app', ['ui.router', 'app.views', 'ngCkeditor', 'mediaPlayer'])
 
     FORM_CONTENT_TYPE = {'Content-Type': 'application/x-www-form-urlencoded'}
     $urlRouterProvider.otherwise('/')
-    
+    pageResolver = ['$http', '$stateParams', ($http, $stateParams) ->
+          $http.get("/api/page/#{$stateParams.pageId}").then (response) ->
+            response.data
+          ]
     $stateProvider
     .state('app',
       url: '/'
@@ -162,14 +165,25 @@ angular.module('app', ['ui.router', 'app.views', 'ngCkeditor', 'mediaPlayer'])
       templateUrl: "page/index.html"
     )
     .state('page.show',
-      url: '/:pageId'
+      url: '/:pageId?sectionId&newSection'
       resolve:
-        page: ['$http', '$stateParams', ($http, $stateParams) ->
-          $http.get("/api/page/#{$stateParams.pageId}").then (response) ->
-            response.data
-          ]
-      controller: ['$scope', 'page', ($scope, page) ->
+        page: pageResolver
+      controller: ['$scope', 'page', '$stateParams', '$state', '$http', ($scope, page, $stateParams, $state, $http) ->
         $scope.page = page
+        $scope.newSection = {weight: page.sections.length + 1}
+        $scope.isNewSection = $stateParams.newSection or false
+        
+        if not $scope.isNewSection
+          $scope.editSectionId = $stateParams.sectionId
+
+        $scope.saveSection = (section) ->
+          $http.post("/api/page/#{$scope.page.id}/update_section", $.param(section), {headers: FORM_CONTENT_TYPE}).then (response) ->
+            $state.go('page.show', {pageId: $scope.page.id, sectionId: null, newSection: null})
+
+        $scope.doNewSection = () ->
+          $http.post("/api/page/#{$scope.page.id}/create_section", $.param($scope.newSection), {headers: FORM_CONTENT_TYPE}).then (response) ->
+            $state.go('page.show', {pageId: $scope.page.id, sectionId: null, newSection: null})
+          
         ]
       templateUrl: "page/show.html"
     )

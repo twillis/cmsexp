@@ -1,9 +1,8 @@
 '''
 test crud and other logic
 '''
-import unittest
 from cmsexp import models
-from faker import internet, lorem
+from faker import lorem
 from base import DBTestCase, create_testuser
 
 

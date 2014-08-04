@@ -38,6 +38,13 @@ class ModelBase(object):
         if cb:
             cb(object_session(target))
 
+    def apply_data(self, **kw):
+        for k, v in kw.items():
+            if k in self._sa_instance_state.dict:
+                setattr(self, k, v)
+            else:
+                log.warn("param %s ignored" % k)
+
 Base = declarative_base(cls=ModelBase)
 
 def Ref(cls, col="id"):
