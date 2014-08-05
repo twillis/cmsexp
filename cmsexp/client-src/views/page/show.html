@@ -1,25 +1,30 @@
 <h1>{{page.title}}</h1>
-
+<a ng-hide="$MODE==MODE_PAGE_EDIT" ui-sref="page.show({pageId:page.id, sectionId: null, newSection: null, editPage: true})"><i class="fa fa-edit"></i></a>
 <span ng-repeat="section in page.sections | orderBy:weight">
-  <i class="fa-android">yeah</i>
-  <div ng-hide="editSectionId == section.id">
-    <a ui-sref="page.show({pageId:page.id, sectionId: section.id, newSection: null})">edit section</a>
+  <div ng-hide="editSectionId == section.id && $MODE === MODE_SEC_EDIT">
+ 
+    <a ui-sref="page.show({pageId:page.id, sectionId: section.id, mode: MODE_SEC_EDIT})">
+      <i class="fa fa-edit"></i>
+    </a>
+    <a ng-click="doDelete(section)">
+      <i class="fa fa-trash-o"></i>
+    </a>
     <span ng-bind-html="section.body | asHtml"/></span>
   </div>
-  <div ng-show="editSectionId == section.id">
+  <div ng-show="editSectionId == section.id && $MODE == MODE_SEC_EDIT">
     <textarea ckeditor="editorOptions" ng-model="section.body">
       
     </textarea>
     <button ng-click="saveSection(section)">Save</button>
-    <a ui-sref="page.show({pageId: page.id, sectionId: null, newSection: null})">Cancel</a>
+    <a ui-sref="page.show({pageId: page.id, sectionId: null, mode: null})">Cancel</a>
   </div>
 </span>
 
-<a ng-hide="isNewSection=='true'" ui-sref="page.show({pageId: page.id, sectionId: null, newSection: true})">new section</a>
-<div ng-show="isNewSection=='true'">
+<a ng-hide="$MODE==MODE_SEC_NEW" ui-sref="page.show({pageId: page.id, sectionId: null, mode: MODE_SEC_NEW})"><i class="fa fa-file-o"></i></a>
+<div ng-show="$MODE==MODE_SEC_NEW">
     <textarea ckeditor="editorOptions" ng-model="newSection.body">
       
     </textarea>
     <button ng-click="doNewSection()">Save</button>
-    <a ui-sref="page.show({pageId: page.id, sectionId: null, newSection: null})">Cancellle</a>
+    <a ui-sref="page.show({pageId: page.id, sectionId: null, mode: null})">Cancel</a>
 </div>
